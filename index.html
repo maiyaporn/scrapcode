@@ -7,7 +7,7 @@ title: Home
 	{% include top.html %}
 	<div id="home-title">
 		<a href="{{ site.url }}{{ site.baseurl }}">
-			<div class="site-icon-home" style="background-image: url({{ site.icon }});" data-stellar-ratio="0.5"></div>
+			<div class="site-icon-home" style="background-image: url({{ site.url }}{{ site.baseurl }}{{ site.icon }});" data-stellar-ratio="0.5"></div>
 		</a>
 		<h2>Scrapcode</h2>
 	</div>
@@ -38,6 +38,6 @@ title: Home
 	{% endif %}
 </nav>
 </div>
-<footer class="clean" style="background-image: url({{ site.cover }}); background-position: bottom; bottom: 0; z-index: 4; position: absolute; height: 60px; {% if site.parallax != true %}background-attachment: scroll;{% endif %}">
+<footer class="clean" style="background-image: url({{ site.url }}{{ site.baseurl }}{{ site.cover }}); background-position: bottom; bottom: 0; z-index: 4; position: absolute; height: 60px; {% if site.parallax != true %}background-attachment: scroll;{% endif %}">
 	<p class="copyright">&copy;{{ site.time | date: "%Y" }}, <a href="{{ site.copyright.url }}" target="_blank">{{ site.copyright.author }}</a>. <a href="{{ site.copyright.type_url }}" target="_blank">{{ site.copyright.type_title }}</a>.</p>
 </footer>
