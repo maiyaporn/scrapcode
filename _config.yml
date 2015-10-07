@@ -1,0 +1,57 @@
+# Dependencies
+markdown:	kramdown
+# Permalinks
+permalink:	/blog/:title
+
+# Setup
+title:            Scrapcode
+tagline:          'blog'
+description:      'Bits and pieces of my journey'
+url:              http://maiyaporn.github.io
+baseurl:          /scrapcode
+commentsystem:    google
+disqus:           example
+
+author:
+  name:           Maiyaporn Phanich
+  url:            
+
+paginate:         5
+
+# Custom vars
+icon:             /assets/images/icon.png
+cover:            /assets/images/cover.png
+
+social:
+  - icon:         linkedin
+    url:          https://www.linkedin.com/in/mphanich
+    desc:         Add me on linkedin
+
+  - icon:         github
+    url:          https://github.com/maiyaporn
+    desc:         Fork me on github
+
+  - icon:         googleplus-alt
+    url:          https://plus.google.com/+MukPhanich
+    desc:         Add me on google+
+
+menu:
+  - title:        Home
+    url:          /
+
+  - title:        About
+    url:          /about
+
+copyright:
+  author:         Maiyaporn Phanich
+  url:            http://maiyaporn.github.io
+  type_title:     
+  type_url:       
+
+parallax:         false
+
+# Google Analytics (add the UA Code, e.g.: UA-xxxxxxxx-1)
+google_analytics:  
+
+# Default Theme Color for Chrome on Android Lollipop (Use RGB ColorCode without `#`, e.g.: `db5945`)
+theme_color:       7E9576
