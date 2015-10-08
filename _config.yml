@@ -7,8 +7,8 @@ permalink:	/blog/:title
 title:            Scrapcode
 tagline:          'blog'
 description:      'Bits and pieces of my journey'
-url:              http://maiyaporn.github.io
-baseurl:          /scrapcode
+url:              http://maiyaporn.github.io/scrapcode
+baseurl:          
 commentsystem:    google
 disqus:           example
 
@@ -45,8 +45,8 @@ menu:
 copyright:
   author:         Maiyaporn Phanich
   url:            http://maiyaporn.github.io
-  type_title:     
-  type_url:       
+  type_title:     CC
+  type_url:       http://creativecommons.org/licenses/by-nc/2.5
 
 parallax:         false
 

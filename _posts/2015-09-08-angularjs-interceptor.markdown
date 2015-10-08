@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "AngularJS HttpInterceptor"
-quote: "Intercepts error response from server in one place"
+quote: "Intercepts error from server in one place"
 image: false
 video: false
 comments: true
