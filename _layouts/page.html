@@ -2,12 +2,14 @@
 layout: default
 ---
 
-<header class="clean" style="background-image: url({{ site.url }}{{ site.cover }}); height: 100%; {% if site.parallax != true %}background-attachment: scroll;{% endif %}" data-stellar-background-ratio="0.5" data-stellar-horizontal-offset="50">
+<header class="clean" style="background-image: url({{ site.baseurl }}{{ site.cover }}); height: 100%; {% if site.parallax != true %}background-attachment: scroll;{% endif %}" data-stellar-background-ratio="0.5" data-stellar-horizontal-offset="50">
 	{% include top.html %}
-	<a href="{{ site.url }}{{ site.baseurl }}">
-		<div id="home-title" class="site-icon-page" style="background-image: url({{ site.icon }});" data-stellar-ratio="0.7"></div>
-	</a>
-	<div id="post-info" style="bottom: 30px; text-align: center; line-height: 45px;" data-stellar-ratio="0.7">
+	<div id="home-title">
+		<a href="{{ site.url }}{{ site.baseurl }}">
+			<div class="site-icon-home" style="background-image: url({{ site.baseurl }}{{ site.icon }});" data-stellar-ratio="0.7"></div>
+		</a>
+	</div>
+	<div id="post-info" style="bottom: 80px; text-align: center; line-height: 45px;" data-stellar-ratio="0.7">
 		<h1>{{ page.title }}</h1>
 	</div>
 	<div id="nav-icon" style="bottom: 30px;" data-stellar-ratio="4">
@@ -19,10 +21,6 @@ layout: default
 		{{ content }}
 	</div>
 </div>
-<footer class="{{ footer_style }}" style="background-image: url({% if footer_image %}{{ footer_image }}{% else %}{{ site.cover }}{% endif %}); height: 75%; min-height: 500px; {% if site.parallax != true %}background-attachment: scroll;{% endif %}" data-stellar-background-ratio="0.5" data-stellar-horizontal-offset="50" data-stellar-vertical-offset="50">
-	<div id="nav-icon" style="top: 60px;" data-stellar-ratio="0.8">
-		<a class="scroll" data-speed="500" href="#article"><span class="genericon genericon-collapse"></span></a>
-	</div>
-	<p class="copyright">&copy;{{ site.time | date: "%Y" }}, <a href="{{ site.copyright.url }}" target="_blank">{{ site.copyright.author }}</a>. <a href="{{ site.copyright.type_url }}" target="_blank">{{ site.copyright.type_title }}</a>.</p>
+<footer class="clean" style="background-image: url({{ site.baseurl }}{{ site.cover }}); background-position: bottom; bottom: 0; z-index: 4; position: absolute; height: 60px; {% if site.parallax != true %}background-attachment: scroll;{% endif %}" data-stellar-background-ratio="0.5" data-stellar-horizontal-offset="50" data-stellar-vertical-offset="50">
+	<p class="copyright"><i>Copyright &copy; {{ site.time | date: "%Y" }} {{ site.copyright.author }}</i></p>
 </footer>
-<script src="{{ site.baseurl }}/assets/js/smooth-scroll.js"></script>

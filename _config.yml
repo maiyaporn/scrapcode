@@ -7,8 +7,8 @@ permalink:	/blog/:title
 title:            Scrapcode
 tagline:          'blog'
 description:      'Bits and pieces of my journey'
-url:              http://maiyaporn.github.io/scrapcode
-baseurl:          
+url:              http://maiyaporn.github.io
+baseurl:          /scrapcode
 commentsystem:    google
 disqus:           example
 
@@ -37,7 +37,7 @@ social:
 
 menu:
   - title:        Home
-    url:          /
+    url:          
 
   - title:        About
     url:          /about

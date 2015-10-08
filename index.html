@@ -3,11 +3,11 @@ layout: default
 title: Home
 ---
 
-<header class="clean" style="height: 350px; background-image: url({{ site.url }}{{ site.cover }}); {% if site.parallax != true %}background-attachment: scroll;{% endif %}" data-stellar-background-ratio="0.5" data-stellar-horizontal-offset="50">
+<header class="clean" style="height: 350px; background-image: url({{ site.baseurl }}{{ site.cover }}); {% if site.parallax != true %}background-attachment: scroll;{% endif %}" data-stellar-background-ratio="0.5" data-stellar-horizontal-offset="50">
 	{% include top.html %}
 	<div id="home-title">
-		<a href="{{ site.url }}">
-			<div class="site-icon-home" style="background-image: url({{ site.url }}{{ site.icon }});" data-stellar-ratio="0.5"></div>
+		<a href="{{ site.url }}{{ site.baseurl }}">
+			<div class="site-icon-home" style="background-image: url({{ site.baseurl }}{{ site.icon }});" data-stellar-ratio="0.5"></div>
 		</a>
 		<h2>Scrapcode</h2>
 	</div>
@@ -38,6 +38,6 @@ title: Home
 	{% endif %}
 </nav>
 </div>
-<footer class="clean" style="background-image: url({{ site.url }}{{ site.cover }}); background-position: bottom; bottom: 0; z-index: 4; position: absolute; height: 60px; {% if site.parallax != true %}background-attachment: scroll;{% endif %}">
-	<p class="copyright">&copy;{{ site.time | date: "%Y" }}, <a href="{{ site.copyright.url }}" target="_blank">{{ site.copyright.author }}</a>. <a href="{{ site.copyright.type_url }}" target="_blank">{{ site.copyright.type_title }}</a>.</p>
+<footer class="clean" style="background-image: url({{ site.baseurl }}{{ site.cover }}); background-position: bottom; bottom: 0; z-index: 4; position: absolute; height: 60px; {% if site.parallax != true %}background-attachment: scroll;{% endif %}">
+	<p class="copyright"><i>Copyright &copy; {{ site.time | date: "%Y" }} {{ site.copyright.author }}</i></p>
 </footer>
