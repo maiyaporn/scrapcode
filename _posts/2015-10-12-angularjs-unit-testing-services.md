@@ -1,19 +1,18 @@
 ---
 layout: post
-title: "AngularJs Unit Testing with Jasmine Part I"
-quote: "Writing a unit test for AngularJS application with Jasmine"
+title: "AngularJs Unit Testing: Services"
+quote: "Testing angular's services with Jasmine"
 video: false
 comments: true
 theme_color: 302F2D
+tags: [angularjs, jasmine, unit-testing, service]
 ---
 
-#AngularJs Unit Testing with Jasmine Part I
+# Unit Testing Services with Jasmine #
 
 In unit testing, we want to make sure that a particular class is working correctly without concerning the behavior of its dependent components (with no external dependencies). 
 
-Jasmine is a simple and powerful framework that helps us to write a unit test, but that alone might not be so easy as it seems. Luckily, angular has provided many tools to make unit testing easier. 
-
-Service and controller are the two most common pieces of code we want to test. There are a few differences between testing service and controller classes, but idea is basically the same. 
+Service and controller are the two most common pieces of code we want to test. There are a few differences between testing service and controller classes, but idea is basically the same. Jasmine is a simple and powerful framework that helps us to write a unit test, but that alone might not be so easy as it seems. Luckily, angular has provided many tools to make unit testing easier. 
 
 Let's start with how to test angular service. Here we have a simple service called ‘productService’ which responsible to get the data from the server via $http service with getAll() that will return a list of products.
 
@@ -32,7 +31,8 @@ angular.module('app.product')
 });
 {% endhighlight %}
 
-There are many things to do before we can write an actual test. We need to set up a test, load required modules, spy and mock dependencies.
+
+There are many steps before we can write an actual test. We need to set up a test, load required modules, spy and mock dependencies.
 
 The productService is registered to the 'app.product' module and we can load it the same way we load the module to register a service or controller.
 
@@ -41,6 +41,7 @@ The productService is registered to the 'app.product' module and we can load it 
 module('app.product');
 {% endhighlight %}
 
+### Working with $httpBackend ###
 
 It also requires $http service to get the data from the server and modalService to handle the error. We want to test that our service calls the api with the expected request, but we don't want to actually make a real request to the server. This is when you should get to know $httpBackend a service in module ngMock by angular. 
 
@@ -65,6 +66,9 @@ inject(function(_$httpBackend_, _productService_) {
   productService = _productService_;
 });
 {% endhighlight %}
+
+
+### Spy/Mock objects ###
 
 Next, we need to mock and spy modalService. We can easily create a mock like creating any object and use jasmine spy to spy on any object or function. 
 
@@ -93,7 +97,7 @@ From Angular document, there are two ways to specify what test data should be re
 
 There are shortcuts for each of these e.g. expectGET, whenGET
 
-**What is the difference between these two?**
+### What is the difference between these two? ###
 
 To put it easy, expect is stricter than when. Both can be used to define fake backend but only expect will make assertions for requests and responses. It will fail if it's not as expect or in a wrong order. More detail in [$httpBackend](https://docs.angularjs.org/api/ngMock/service/$httpBackend).
 
@@ -121,7 +125,7 @@ it('should return all productService', function() {
 });
 {% endhighlight %}
 
-**What if the server thows an error?**
+### What if the server thows an error? ###
 We can change the respond of requestHandler to return error with 
 
 > requestHandler.respond([status,] data[, headers, statusText])

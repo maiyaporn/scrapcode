@@ -1,0 +1,418 @@
+<html>
+	<head>
+	
+	<link href="//gmpg.org/xfn/11" rel="profile">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<link rel="canonical" href="http://maiyaporn.github.io/scrapcode/blog/angularjs-unit-testing-ui-router" />
+	<meta name="description" content="Test your application routing with jasmine" />
+	<meta property="og:description" content="Test your application routing with jasmine" />
+	<meta itemprop="image" content="http://maiyaporn.github.io/scrapcode/assets/images/icon.png" />
+	<meta property="og:image" content="http://maiyaporn.github.io/scrapcode/assets/images/icon.png" />
+	<meta property="og:title" content="AngularJs Unit Testing: ui-router" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="http://maiyaporn.github.io/scrapcode/blog/angularjs-unit-testing-ui-router" />
+	<meta property="og:site_name" content="Scrapcode" />
+	<title>AngularJs Unit Testing: ui-router &middot; Scrapcode</title>
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" media="only screen and (min-width: 900px)" href="/scrapcode/assets/css/desktop.css" />
+	<link rel="stylesheet" type="text/css" media="only screen and (max-width: 899px)" href="/scrapcode/assets/css/mobile.css" />
+	<link href="/scrapcode/assets/css/genericons.css" type="text/css" rel="stylesheet" />
+	<link href="/scrapcode/assets/css/syntax.css" type="text/css" rel="stylesheet" />
+	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Fenix:400,400italic">
+	<link rel="apple-touch-icon" href="http://maiyaporn.github.io/scrapcode/assets/images/icon.png">
+	<link rel="shortcut icon" href="http://maiyaporn.github.io/scrapcode/assets/images/favicon.ico">
+	<link rel="alternate" type="application/rss+xml" title="RSS" href="http://maiyaporn.github.io/scrapcode/atom.xml">
+	<script type="text/javascript" src="/scrapcode/assets/js/jquery-2.1.0.min.js"></script>
+	
+	
+	<!-- Theme Color for Chrome on Android Lollipop -->
+	<meta name="theme-color" content="#302F2D">
+</head>
+
+	<body>
+		<header class="clean" style="background-image: url(/scrapcode/assets/images/cover.png); height: 100%; background-attachment: scroll;" data-stellar-background-ratio="0.5" data-stellar-horizontal-offset="50">
+	
+	<label class="menu" for="_1">
+	<span class="genericon genericon-menu"></span>
+</label>
+<input id="_1" type="checkbox">
+<div class="menu-content">
+	<p class="menu-title">Scrapcode<p>
+	<div class="menu" style="background-color: #1a1a1a; z-index: -1;"></div>
+	
+		<a href="/scrapcode">Home</a>
+	
+		<a href="/scrapcode/about">About</a>
+	
+	<hr>
+	<a href="https://www.linkedin.com/in/mphanich" class="social-links-menu" target="_blank" title="Add me on linkedin"><span class="genericon genericon-linkedin"></span></a><a href="https://github.com/maiyaporn" class="social-links-menu" target="_blank" title="Fork me on github"><span class="genericon genericon-github"></span></a><a href="https://plus.google.com/+MukPhanich" class="social-links-menu" target="_blank" title="Add me on google+"><span class="genericon genericon-googleplus-alt"></span></a>
+</div>
+<!-- <div class="social-links" data-stellar-ratio="0.1">
+	
+		<a href="https://www.linkedin.com/in/mphanich" target="_blank" title="Add me on linkedin"><span class="genericon genericon-linkedin"></span></a>
+	
+		<a href="https://github.com/maiyaporn" target="_blank" title="Fork me on github"><span class="genericon genericon-github"></span></a>
+	
+		<a href="https://plus.google.com/+MukPhanich" target="_blank" title="Add me on google+"><span class="genericon genericon-googleplus-alt"></span></a>
+	
+</div> -->
+
+	<div id="post-info" data-stellar-ratio="0.7">
+		<h1>AngularJs Unit Testing: ui-router</h1>
+		
+			<h2>Test your application routing with jasmine</h2>
+		
+		<a class="site-title" href="http://maiyaporn.github.io/scrapcode"><div class="site-icon-small" style="background-image: url(http://maiyaporn.github.io/scrapcode/assets/images/icon.png);"></div>Scrapcode</a>, in 01 November 2015
+	</div>
+	
+	<div id="nav-icon" style="bottom: 30px;" data-stellar-ratio="4">
+		<a class="scroll" data-speed="500" href="#article"><span class="genericon genericon-expand"></span></a>
+	</div>
+</header>
+<div id="middle">
+	<div id="article">
+		<h1 id="unit-testing-ui-router-with-jasmine">Unit Testing ui-router with Jasmine</h1>
+
+<p>I started to realize that it’s important to test a router since I began to put a considerably amount of code in resolve block and controller required these resolves to function. This means it is crucial to make sure that resolves are resolved and work correctly. It’s also a good idea to make sure the configuration for each state is correct.</p>
+
+<p>At first, this seems to be a daunting task. I didn’t even know how to start. Thanks to <a href="http://nikas.praninskas.com/angular/2014/09/27/unit-testing-ui-router-configuration/">this post</a>. It gave me an idea how to write a test for my application. However, there are still some parts to figure out since my ui-router is a lot more complicate than the example.</p>
+
+<p>Basically, I have a role-based access application. Users with different roles have access to different page(state) of the application. It is controlled by the permission assigned to each state which can be either ‘admin’ or ‘user’. This permission will be validated when transition between state happen by watching for <strong>‘$stateChangeStart’</strong> event. It will check for permission of the toState and redirect to error page if not allowed. There are also a significant amount of code in the resolves of many states. Mostly load required files with $ocLazyLoad and call other services in the application.</p>
+
+<p>To get a better idea, this is part of my ui-router config.</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;app.routing&#39;</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">run</span><span class="p">(</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$rootScope</span><span class="p">,</span> <span class="nx">$state</span><span class="p">,</span> <span class="nx">$stateParams</span><span class="p">,</span> <span class="nx">securityService</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$rootScope</span><span class="p">.</span><span class="nx">$on</span><span class="p">(</span><span class="s2">&quot;$stateChangeStart&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">toState</span><span class="p">,</span> <span class="nx">toParams</span><span class="p">,</span> <span class="nx">fromState</span><span class="p">,</span> <span class="nx">fromParams</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">toState</span><span class="p">.</span><span class="nx">data</span> <span class="o">||</span> <span class="o">!</span><span class="nx">toState</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">permissions</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">securityService</span><span class="p">.</span><span class="nx">isAuthenticated</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="nx">toState</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">permissions</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+          <span class="k">return</span> <span class="nx">$state</span><span class="p">.</span><span class="nx">go</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">securityService</span><span class="p">.</span><span class="nx">isAuthorized</span><span class="p">(</span><span class="nx">toState</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">permissions</span><span class="p">))</span> <span class="p">{</span>
+          <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+          <span class="k">return</span> <span class="nx">$state</span><span class="p">.</span><span class="nx">go</span><span class="p">(</span><span class="s1">&#39;error404&#39;</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">});</span>
+    <span class="p">})</span>
+  <span class="p">.</span><span class="nx">config</span><span class="p">(</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">$stateProvider</span><span class="p">,</span> <span class="nx">$urlRouterProvider</span><span class="p">,</span> <span class="nx">permission</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$stateProvider</span>
+        <span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="p">{</span>
+          <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/login&#39;</span><span class="p">,</span>
+          <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;login.html&#39;</span><span class="p">,</span>
+          <span class="nx">resolve</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">deps</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$ocLazyLoad</span><span class="p">)</span> <span class="p">{</span>
+              <span class="k">return</span> <span class="nx">$ocLazyLoad</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s1">&#39;loginCtrl.js&#39;</span><span class="p">);</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="s1">&#39;error404&#39;</span><span class="p">,</span> <span class="p">{</span>
+          <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;^/error404&#39;</span><span class="p">,</span>
+          <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;error404.html&#39;</span>
+        <span class="p">})</span>
+
+        <span class="c1">// Authorized pages</span>
+        <span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="p">{</span>
+          <span class="kr">abstract</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+          <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+          <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;layout.html&#39;</span><span class="p">,</span>
+          <span class="nx">resolve</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">deps</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$ocLazyLoad</span><span class="p">)</span> <span class="p">{</span>
+              <span class="k">return</span> <span class="nx">$ocLazyLoad</span><span class="p">.</span><span class="nx">load</span><span class="p">([...]);</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="s1">&#39;app.product&#39;</span><span class="p">,</span> <span class="p">{</span>
+          <span class="kr">abstract</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+          <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;^/product&#39;</span><span class="p">,</span>
+          <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;product.html&#39;</span><span class="p">,</span>
+          <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;ProductCtrl&#39;</span><span class="p">,</span>
+          <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">permissions</span><span class="o">:</span> <span class="nx">permission</span><span class="p">.</span><span class="nx">user</span>
+          <span class="p">},</span>
+          <span class="nx">resolve</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">products</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$ocLazyLoad</span><span class="p">,</span> <span class="nx">$injector</span><span class="p">)</span> <span class="p">{</span>
+              <span class="k">return</span> <span class="nx">$ocLazyLoad</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s1">&#39;productService.js&#39;</span><span class="p">)</span>
+                <span class="p">.</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                  <span class="kd">var</span> <span class="nx">productService</span> <span class="o">=</span> <span class="nx">$injector</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;productService&#39;</span><span class="p">);</span>
+                  <span class="k">return</span> <span class="nx">productService</span><span class="p">.</span><span class="nx">getAll</span><span class="p">();</span>
+                <span class="p">})</span>
+            <span class="p">},</span>
+            <span class="nx">deps</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$ocLazyLoad</span><span class="p">)</span> <span class="p">{</span>
+              <span class="k">return</span> <span class="nx">$ocLazyLoad</span><span class="p">.</span><span class="nx">load</span><span class="p">([...]);</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">state</span><span class="p">(</span><span class="s1">&#39;app.product.new&#39;</span><span class="p">,</span> <span class="p">{</span>
+          <span class="kr">abstract</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+          <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/new&#39;</span><span class="p">,</span>
+          <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;createProduct.html&#39;</span><span class="p">,</span>
+          <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;CreateProductCtrl&#39;</span><span class="p">,</span>
+          <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">permissions</span><span class="o">:</span> <span class="nx">permission</span><span class="p">.</span><span class="nx">admin</span>
+          <span class="p">},</span>
+          <span class="nx">resolve</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">deps</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$ocLazyLoad</span><span class="p">)</span> <span class="p">{</span>
+              <span class="k">return</span> <span class="nx">$ocLazyLoad</span><span class="p">.</span><span class="nx">load</span><span class="p">([...]);</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">})</span>
+    <span class="p">});</span></code></pre></div>
+
+<p>Here, I have ‘login’ and ‘error404’ states that anyone can access and ‘app.product’ and ‘app.product.new’ for authenticated users with authorization as user and admin respectively. </p>
+
+<p>To begin, let’s think about what should be test in this router</p>
+
+<ul>
+  <li>Verify anyone can access ‘login’ and config is correct</li>
+  <li>Verify authenticated users(user or admin) can access ‘app.product’, config is correct, and resolve is resolved</li>
+  <li>Verify users with admin role can access ‘app.product.new’ and config is correct</li>
+  <li>Verify users with user role cannot access ‘app.product.new’ and will be redirect to ‘error404’</li>
+</ul>
+
+<p>This can achieve these with a few simple steps. Most of the work will be about setting up test and mocking services(securityService, productService).</p>
+
+<p>First, we can change state or navigate to other pages by using $state or $location. We also need to trigger a digest cycle with $rootScope.$digest() to revole promises in resolve block in state config.</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$location</span><span class="p">.</span><span class="nx">url</span><span class="p">(</span><span class="s1">&#39;/product&#39;</span><span class="p">);</span>
+<span class="nx">$rootScope</span><span class="p">.</span><span class="nx">$digest</span><span class="p">();</span></code></pre></div>
+
+<p>Next is template. We can use $templateCache to load the template for each state before running test.</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$templateCache</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s1">&#39;login.html&#39;</span><span class="p">,</span> <span class="s1">&#39;This is the template for login&#39;</span><span class="p">);</span></code></pre></div>
+
+<p>If we do not load templates into $templateCache, angular will try to get a template from the server by using $http and it will throw an error - Unexpected $http.GET(‘…’).</p>
+
+<p>We need to do this for every template we are going to use and that sounds like we are going to have a lot of duplicate line of code to just load the templates. Luckily, there is a better way with <a href="https://github.com/karma-runner/karma-ng-html2js-preprocessor">karma-ng-html2js-preprocessor</a>. This is a plugin to covert html files to angular templates automatically. Just follow the document and load the module that contains your templates and we are done.</p>
+
+<p>Here is what it’s going to look like for ‘login’.</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should go to /login&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">$location</span><span class="p">.</span><span class="nx">url</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+  <span class="nx">$rootScope</span><span class="p">.</span><span class="nx">$digest</span><span class="p">();</span>
+
+  <span class="kd">var</span> <span class="nx">currentState</span> <span class="o">=</span> <span class="nx">$state</span><span class="p">.</span><span class="nx">current</span><span class="p">;</span>
+  <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">name</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">url</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">templateUrl</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;login.html&#39;</span><span class="p">);</span>
+<span class="p">});</span></code></pre></div>
+
+<p>The login is pretty easy. Let’s see another test for ‘app.product’. </p>
+
+<p>The parent state of ‘app.product’ is ‘app’ which is an abstract state that has a resolve named ‘deps’. The ‘deps’ will load all required files with <a href="https://oclazyload.readme.io/docs/with-your-router">$ocLazyLoad</a>. Since we don’t want to use the actual service, the easiest way to mock $ocLazyLoad would be to inject $ocLazyLoad and spy on ‘load’ method and return promise.</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">$ocLazyLoad</span><span class="p">;</span>
+<span class="nx">inject</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_$ocLazyLoad_</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">$ocLazyLoad</span> <span class="o">=</span> <span class="nx">_$ocLazyLoad_</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="nx">spyOn</span><span class="p">(</span><span class="nx">$ocLazyLoad</span><span class="p">,</span> <span class="s1">&#39;load&#39;</span><span class="p">).</span><span class="nx">and</span><span class="p">.</span><span class="nx">callFake</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">$q</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;resolved&#39;</span><span class="p">);</span>
+<span class="p">});</span></code></pre></div>
+
+<p>The app.product state has ‘products’ resolve which will call productService to get the data. Since, we already spied $ocLazyLoad, we only need to create mock objects for productService and securityService and tell angular to use our mocks.</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">mockSecurity</span> <span class="o">=</span> <span class="p">{},</span> <span class="nx">mockProductService</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">module</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$provide</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">$provide</span><span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="s1">&#39;securityService&#39;</span><span class="p">,</span> <span class="nx">mockSecurity</span><span class="p">);</span>  
+  <span class="nx">$provide</span><span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="s1">&#39;productService&#39;</span><span class="p">,</span> <span class="nx">mockProductService</span><span class="p">);</span>
+<span class="p">});</span></code></pre></div>
+
+<p>Then, we need to fake the implementation of productService.getAll() which is actually going to call $http to get a list of products and return a promise. This can be done by using jasmine createSpy() and $q to create a promise.</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">$q</span><span class="p">;</span>
+<span class="nx">inject</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_$q_</span><span class="p">){</span>
+    <span class="nx">$q</span> <span class="o">=</span> <span class="nx">_$q_</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="nx">mockProductService</span><span class="p">.</span><span class="nx">getAll</span> <span class="o">=</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">().</span><span class="nx">and</span><span class="p">.</span><span class="nx">callFake</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">$q</span><span class="p">.</span><span class="nx">when</span><span class="p">([{</span><span class="nx">productId</span><span class="o">:</span><span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="nx">productId</span><span class="o">:</span><span class="mi">2</span><span class="p">}]);</span>
+<span class="p">});</span></code></pre></div>
+
+<p>One last thing to handle is permission and securityService. There are two methods in securityService: isAuthorized and isAuthenticated. We will use ‘userRole’ variable to keep the role of test user.</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Check the user&#39;s role against state&#39;s permission</span>
+<span class="kd">var</span> <span class="nx">userRole</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span>
+<span class="nx">mockSecurity</span><span class="p">.</span><span class="nx">isAuthorized</span> <span class="o">=</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">().</span><span class="nx">and</span><span class="p">.</span><span class="nx">callFake</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">permission</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">permission</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">userRole</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="c1">// Check if user is logged in or not</span>
+<span class="nx">mockSecurity</span><span class="p">.</span><span class="nx">isAuthenticated</span> <span class="o">=</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">().</span><span class="nx">and</span><span class="p">.</span><span class="nx">returnValue</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span></code></pre></div>
+
+<p>With all the above setup and mocks, we can now test ‘app.product’ routing and verify config and resolve.</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should go to app.product&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">goTo</span><span class="p">(</span><span class="s1">&#39;/products&#39;</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">currentState</span> <span class="o">=</span> <span class="nx">$state</span><span class="p">.</span><span class="nx">current</span><span class="p">;</span>
+  <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">name</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;app.product&#39;</span><span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">url</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;^/products&#39;</span><span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">templateUrl</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;products.html&#39;</span><span class="p">);</span>
+  <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">permissions</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="nx">permission</span><span class="p">.</span><span class="nx">user</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">resolvedSpy</span> <span class="o">=</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">();</span>
+  <span class="nx">$injector</span><span class="p">.</span><span class="nx">invoke</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">resolve</span><span class="p">[</span><span class="s1">&#39;products&#39;</span><span class="p">]).</span><span class="nx">then</span><span class="p">(</span><span class="nx">resolvedSpy</span><span class="p">);</span>
+  <span class="nx">$rootScope</span><span class="p">.</span><span class="nx">$digest</span><span class="p">();</span>
+  <span class="nx">expect</span><span class="p">(</span><span class="nx">resolvedSpy</span><span class="p">).</span><span class="nx">toHaveBeenCalledWith</span><span class="p">([]);</span>
+<span class="p">});</span></code></pre></div>
+
+<p>To verify ‘products’ resolve is revoled, I create a spy object called ‘resolvedSpy’ and pass that to the callback of the resolve. Resolve is just a method that return promise so we can access it from $state.current.resolve[‘products’]. By using $injector.invoke to invoke the method, all arguments will be supplied fom <a href="https://docs.angularjs.org/api/auto/service/$injector">$injector</a>. Don’t forget to call $digest and then we can verify that our spy object has been called or not.</p>
+
+<p>After putting everything together, you can check out the full test below.</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Router&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">$state</span><span class="p">,</span> <span class="nx">$rootScope</span><span class="p">,</span> <span class="nx">$location</span><span class="p">,</span> <span class="nx">$injector</span><span class="p">,</span> <span class="nx">$q</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">userRole</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span>
+      <span class="nx">mockSecurity</span> <span class="o">=</span> <span class="p">{},</span> <span class="nx">mockProductService</span> <span class="o">=</span> <span class="p">{};</span>
+
+  <span class="nx">beforeEach</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">module</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">$provide</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$provide</span><span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="s1">&#39;securityService&#39;</span><span class="p">,</span> <span class="nx">mockSecurity</span><span class="p">);</span>
+      <span class="nx">$provide</span><span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="s1">&#39;productService&#39;</span><span class="p">,</span> <span class="nx">mockProductService</span><span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="nx">module</span><span class="p">(</span><span class="s1">&#39;app.routing&#39;</span><span class="p">);</span>
+    <span class="nx">module</span><span class="p">(</span><span class="s1">&#39;test.template&#39;</span><span class="p">);</span>
+
+    <span class="nx">inject</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_$state_</span><span class="p">,</span> <span class="nx">_$rootScope_</span><span class="p">,</span> <span class="nx">_$location_</span><span class="p">,</span> <span class="nx">_$injector_</span><span class="p">,</span> <span class="nx">_$q_</span><span class="p">,</span> <span class="nx">_$ocLazyLoad_</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$state</span> <span class="o">=</span> <span class="nx">_$state_</span><span class="p">;</span>
+      <span class="nx">$location</span> <span class="o">=</span> <span class="nx">_$location_</span><span class="p">;</span>
+      <span class="nx">$rootScope</span> <span class="o">=</span> <span class="nx">_$rootScope_</span><span class="p">;</span>
+      <span class="nx">$injector</span> <span class="o">=</span> <span class="nx">_$injector_</span><span class="p">;</span>
+      <span class="nx">$q</span> <span class="o">=</span> <span class="nx">_$q_</span><span class="p">;</span>
+      <span class="nx">$ocLazyLoad</span> <span class="o">=</span> <span class="nx">_$ocLazyLoad_</span><span class="p">;</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+
+  <span class="nx">beforeEach</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">userRole</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span><span class="p">;</span>
+    <span class="nx">spyOn</span><span class="p">(</span><span class="nx">$ocLazyLoad</span><span class="p">,</span> <span class="s1">&#39;load&#39;</span><span class="p">).</span><span class="nx">and</span><span class="p">.</span><span class="nx">callFake</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">$q</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="s1">&#39;resolved&#39;</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+
+  <span class="kd">function</span> <span class="nx">goTo</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$location</span><span class="p">.</span><span class="nx">url</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
+    <span class="nx">$rootScope</span><span class="p">.</span><span class="nx">$digest</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should go to /login&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">goTo</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+
+      <span class="kd">var</span> <span class="nx">currentState</span> <span class="o">=</span> <span class="nx">$state</span><span class="p">.</span><span class="nx">current</span><span class="p">;</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">name</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">);</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">url</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">templateUrl</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;login.html&#39;</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+
+  <span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Product&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">beforeEach</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">mockSecurity</span><span class="p">.</span><span class="nx">isAuthenticated</span> <span class="o">=</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">().</span><span class="nx">and</span><span class="p">.</span><span class="nx">returnValue</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+      <span class="nx">mockSecurity</span><span class="p">.</span><span class="nx">isAuthorized</span> <span class="o">=</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">().</span><span class="nx">and</span><span class="p">.</span><span class="nx">callFake</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">permission</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">permission</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">userRole</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">});</span>
+      
+      <span class="nx">mockProductService</span><span class="p">.</span><span class="nx">getAll</span> <span class="o">=</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">().</span><span class="nx">and</span><span class="p">.</span><span class="nx">callFake</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">$q</span><span class="p">.</span><span class="nx">when</span><span class="p">([{</span><span class="nx">productId</span><span class="o">:</span><span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="nx">productId</span><span class="o">:</span><span class="mi">2</span><span class="p">}]);</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+
+    <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should go to /products&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">userRole</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span><span class="p">;</span>
+      <span class="nx">goTo</span><span class="p">(</span><span class="s1">&#39;/products&#39;</span><span class="p">);</span>
+
+      <span class="kd">var</span> <span class="nx">currentState</span> <span class="o">=</span> <span class="nx">$state</span><span class="p">.</span><span class="nx">current</span><span class="p">;</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">name</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;app.product&#39;</span><span class="p">);</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">url</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;^/productss&#39;</span><span class="p">);</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">templateUrl</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;products.html&#39;</span><span class="p">);</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">permissions</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="nx">permission</span><span class="p">.</span><span class="nx">user</span><span class="p">);</span>
+
+      <span class="kd">var</span> <span class="nx">resolvedSpy</span> <span class="o">=</span> <span class="nx">jasmine</span><span class="p">.</span><span class="nx">createSpy</span><span class="p">();</span>
+      <span class="nx">$injector</span><span class="p">.</span><span class="nx">invoke</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">resolve</span><span class="p">[</span><span class="s1">&#39;products&#39;</span><span class="p">]).</span><span class="nx">then</span><span class="p">(</span><span class="nx">resolvedSpy</span><span class="p">);</span>
+      <span class="nx">$rootScope</span><span class="p">.</span><span class="nx">$digest</span><span class="p">();</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">resolvedSpy</span><span class="p">).</span><span class="nx">toHaveBeenCalledWith</span><span class="p">([{</span><span class="nx">productId</span><span class="o">:</span><span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="nx">productId</span><span class="o">:</span><span class="mi">2</span><span class="p">}]);</span>
+    <span class="p">});</span>
+
+    <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should go to /products/new&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">currentRole</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span><span class="p">;</span>
+      <span class="nx">goTo</span><span class="p">(</span><span class="s1">&#39;/products/new&#39;</span><span class="p">);</span>
+
+      <span class="kd">var</span> <span class="nx">currentState</span> <span class="o">=</span> <span class="nx">$state</span><span class="p">.</span><span class="nx">current</span><span class="p">;</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">name</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;app.product.new&#39;</span><span class="p">);</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">url</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;/new&#39;</span><span class="p">);</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">templateUrl</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;createProduct.html&#39;</span><span class="p">);</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">permissions</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="nx">permission</span><span class="p">.</span><span class="nx">admin</span><span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should go to error404&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="nx">currentRole</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span><span class="p">;</span>
+      <span class="nx">goTo</span><span class="p">(</span><span class="s1">&#39;/products/new&#39;</span><span class="p">);</span>
+
+      <span class="kd">var</span> <span class="nx">currentState</span> <span class="o">=</span> <span class="nx">$state</span><span class="p">.</span><span class="nx">current</span><span class="p">;</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">currentState</span><span class="p">.</span><span class="nx">name</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="s1">&#39;error404&#39;</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">});</span></code></pre></div>
+
+
+	</div>
+	
+	<div id="comments">
+		
+	
+	<script src="https://apis.google.com/js/plusone.js"></script>
+	<div id="g-comments" class="g-comments" data-href="http://maiyaporn.github.io/blog/angularjs-unit-testing-ui-router" data-width="700" data-first_party_property="BLOGGER" data-view_type="FILTERED_POSTMOD"></div>
+	<script>
+		var width = $('#comments').width() * 0.9;
+		width = Math.round(width);
+		$("#g-comments").attr({ "data-width": width });
+	</script>
+
+
+	</div>
+	
+</div>
+
+	
+		
+		
+		
+		
+		
+		
+	
+
+
+<footer class="clean" style="background-image: url(/scrapcode/assets/images/cover.png); background-position: bottom; bottom: 0; z-index: 4; position: absolute; height: 60px; background-attachment: scroll;" data-stellar-background-ratio="0.5" data-stellar-horizontal-offset="50" data-stellar-vertical-offset="50">
+	<p class="copyright"><i>Copyright &copy; 2015 Maiyaporn Phanich</i></p>
+</footer>
+
+		<script>
+		var width = $(window).width()
+		if ( width > 899 )
+		$( function(){
+			$.stellar({
+				responsive: true,
+			verticalScrolling: true,
+			horizontalOffset: 0,
+			verticalOffset: 0,
+			positionProperty: 'transform',
+			});
+		});
+		</script>
+	</body>
+</html>

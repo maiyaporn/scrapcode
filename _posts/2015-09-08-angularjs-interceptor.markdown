@@ -16,8 +16,7 @@ One of the interesting things I have been working with this week is httpIntercep
 
 These are the things I need for my project, but the idea is generic enough to apply to any application. You can do all three of these without interceptor, but you will finally consider using it after a few months when you start to copy and paste the same part of your code to other files. Then, you realize how nice it would be if I can do this everytime I get errors from the server.
 
-So what is httpInterceptor and how does it work?
-------------------------------------------------
+### So what is httpInterceptor and how does it work? ##
 
 You can go and read from angularJS document about [interceptor](https://docs.angularjs.org/api/ng/service/$http#interceptors) for detail. In short, interceptors are services that get called before and/or after the request is sent/returned to/from the server.  
 

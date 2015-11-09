@@ -1,13 +1,14 @@
 ---
 layout: post
-title: "AngularJs Unit Testing with Jasmine Part II"
+title: "AngularJs Unit Testing: Controllers"
 quote: "Testing controllers and handling promises"
 video: false
 comments: true
 theme_color: 302F2D
+tags: [angularjs, jasmine, unit-test, controller, promises, $httpBackend]
 ---
 
-#AngularJS Unit Testing with Jasmine Part II: Controller
+#Unit Testing Controllers with Jasmine
 
 Angular has a pretty good document about [unit testing](https://docs.angularjs.org/guide/unit-testing). If you haven't read it, give it a try. It covers the basic of unit testing in general and in AngularJS application. It is a very good guideline for understanding what we will need to get started and what features angular provide us to help testing easier. However, the application we want to test is always a lot more complicated than these examples.
 
@@ -38,7 +39,7 @@ angular.module('app.product')
 
 What I would like to explain in this post is how to test a controller which has dependencies to service that return promise (e.g. $http).
 
-How can we mock a promise?
+### How to mock a promise? ###
 
 First, we create an object for productService with two methods: getAll and getDetail by using jasmine.createSpy.
 
@@ -107,7 +108,6 @@ it('should get product detail', function() {
 });
 {% endhighlight %}
 
-
 These two tests look fine and simple, but if you run this test, you might encounter an error. This is because our mockproductService is just an object that returns promise. It is not a real service so after the promise is resolved we need to manually digest the cycle by calling $scope.$apply() to make sure the code in callback is executed and scope is updated. Normally, we do not need to deal with $digest() or $apply() directly because Angular do this for us.
 
 {% highlight javascript %}
@@ -115,7 +115,6 @@ $scope.$apply(function() {
     $scope.getDetail(128)
 });
 {% endhighlight %}
-
 
 There are some good articles about $apply() and $digest you can read: [Understanding Angular’s $apply() and $digest()](http://www.sitepoint.com/understanding-angulars-apply-digest/)
 
