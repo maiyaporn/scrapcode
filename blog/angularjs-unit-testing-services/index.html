@@ -3,16 +3,16 @@
 	
 	<link href="//gmpg.org/xfn/11" rel="profile">
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
-	<link rel="canonical" href="http://maiyaporn.github.io/scrapcode/blog/angularjs-unit-testing" />
-	<meta name="description" content="Writing a unit test for AngularJS application with Jasmine" />
-	<meta property="og:description" content="Writing a unit test for AngularJS application with Jasmine" />
+	<link rel="canonical" href="http://maiyaporn.github.io/scrapcode/blog/angularjs-unit-testing-services" />
+	<meta name="description" content="Testing angular's services with Jasmine" />
+	<meta property="og:description" content="Testing angular's services with Jasmine" />
 	<meta itemprop="image" content="http://maiyaporn.github.io/scrapcode/assets/images/icon.png" />
 	<meta property="og:image" content="http://maiyaporn.github.io/scrapcode/assets/images/icon.png" />
-	<meta property="og:title" content="AngularJs Unit Testing with Jasmine Part I" />
+	<meta property="og:title" content="AngularJs Unit Testing: Services" />
 	<meta property="og:type" content="article" />
-	<meta property="og:url" content="http://maiyaporn.github.io/scrapcode/blog/angularjs-unit-testing" />
+	<meta property="og:url" content="http://maiyaporn.github.io/scrapcode/blog/angularjs-unit-testing-services" />
 	<meta property="og:site_name" content="Scrapcode" />
-	<title>AngularJs Unit Testing with Jasmine Part I &middot; Scrapcode</title>
+	<title>AngularJs Unit Testing: Services &middot; Scrapcode</title>
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="MobileOptimized" content="320" />
@@ -61,9 +61,9 @@
 </div> -->
 
 	<div id="post-info" data-stellar-ratio="0.7">
-		<h1>AngularJs Unit Testing with Jasmine Part I</h1>
+		<h1>AngularJs Unit Testing: Services</h1>
 		
-			<h2>Writing a unit test for AngularJS application with Jasmine</h2>
+			<h2>Testing angular's services with Jasmine</h2>
 		
 		<a class="site-title" href="http://maiyaporn.github.io/scrapcode"><div class="site-icon-small" style="background-image: url(http://maiyaporn.github.io/scrapcode/assets/images/icon.png);"></div>Scrapcode</a>, in 12 October 2015
 	</div>
@@ -74,13 +74,11 @@
 </header>
 <div id="middle">
 	<div id="article">
-		<h1 id="angularjs-unit-testing-with-jasmine-part-i">AngularJs Unit Testing with Jasmine Part I</h1>
+		<h1 id="unit-testing-services-with-jasmine">Unit Testing Services with Jasmine</h1>
 
 <p>In unit testing, we want to make sure that a particular class is working correctly without concerning the behavior of its dependent components (with no external dependencies). </p>
 
-<p>Jasmine is a simple and powerful framework that helps us to write a unit test, but that alone might not be so easy as it seems. Luckily, angular has provided many tools to make unit testing easier. </p>
-
-<p>Service and controller are the two most common pieces of code we want to test. There are a few differences between testing service and controller classes, but idea is basically the same. </p>
+<p>Service and controller are the two most common pieces of code we want to test. There are a few differences between testing service and controller classes, but idea is basically the same. Jasmine is a simple and powerful framework that helps us to write a unit test, but that alone might not be so easy as it seems. Luckily, angular has provided many tools to make unit testing easier. </p>
 
 <p>Let’s start with how to test angular service. Here we have a simple service called ‘productService’ which responsible to get the data from the server via $http service with getAll() that will return a list of products.</p>
 
@@ -97,11 +95,13 @@
     <span class="p">};</span>
 <span class="p">});</span></code></pre></div>
 
-<p>There are many things to do before we can write an actual test. We need to set up a test, load required modules, spy and mock dependencies.</p>
+<p>There are many steps before we can write an actual test. We need to set up a test, load required modules, spy and mock dependencies.</p>
 
 <p>The productService is registered to the ‘app.product’ module and we can load it the same way we load the module to register a service or controller.</p>
 
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;app.product&#39;</span><span class="p">);</span></code></pre></div>
+
+<h3 id="working-with-httpbackend">Working with $httpBackend</h3>
 
 <p>It also requires $http service to get the data from the server and modalService to handle the error. We want to test that our service calls the api with the expected request, but we don’t want to actually make a real request to the server. This is when you should get to know $httpBackend a service in module ngMock by angular. </p>
 
@@ -122,6 +122,8 @@
   <span class="nx">$httpBackend</span> <span class="o">=</span> <span class="nx">_$httpBackend_</span><span class="p">;</span>
   <span class="nx">productService</span> <span class="o">=</span> <span class="nx">_productService_</span><span class="p">;</span>
 <span class="p">});</span></code></pre></div>
+
+<h3 id="spymock-objects">Spy/Mock objects</h3>
 
 <p>Next, we need to mock and spy modalService. We can easily create a mock like creating any object and use jasmine spy to spy on any object or function. </p>
 
@@ -148,7 +150,7 @@
 
 <p>There are shortcuts for each of these e.g. expectGET, whenGET</p>
 
-<p><strong>What is the difference between these two?</strong></p>
+<h3 id="what-is-the-difference-between-these-two">What is the difference between these two?</h3>
 
 <p>To put it easy, expect is stricter than when. Both can be used to define fake backend but only expect will make assertions for requests and responses. It will fail if it’s not as expect or in a wrong order. More detail in <a href="https://docs.angularjs.org/api/ngMock/service/$httpBackend">$httpBackend</a>.</p>
 
@@ -174,8 +176,8 @@
   <span class="nx">expect</span><span class="p">(</span><span class="nx">modalService</span><span class="p">,</span> <span class="s1">&#39;handleError&#39;</span><span class="p">).</span><span class="nx">not</span><span class="p">.</span><span class="nx">toHaveBeenCalled</span><span class="p">();</span>
 <span class="p">});</span></code></pre></div>
 
-<p><strong>What if the server thows an error?</strong>
-We can change the respond of requestHandler to return error with </p>
+<h3 id="what-if-the-server-thows-an-error">What if the server thows an error?</h3>
+<p>We can change the respond of requestHandler to return error with </p>
 
 <blockquote>
   <p>requestHandler.respond([status,] data[, headers, statusText])</p>
@@ -270,7 +272,7 @@ We can change the respond of requestHandler to return error with </p>
 		
 	
 	<script src="https://apis.google.com/js/plusone.js"></script>
-	<div id="g-comments" class="g-comments" data-href="http://maiyaporn.github.io/blog/angularjs-unit-testing" data-width="700" data-first_party_property="BLOGGER" data-view_type="FILTERED_POSTMOD"></div>
+	<div id="g-comments" class="g-comments" data-href="http://maiyaporn.github.io/blog/angularjs-unit-testing-services" data-width="700" data-first_party_property="BLOGGER" data-view_type="FILTERED_POSTMOD"></div>
 	<script>
 		var width = $('#comments').width() * 0.9;
 		width = Math.round(width);

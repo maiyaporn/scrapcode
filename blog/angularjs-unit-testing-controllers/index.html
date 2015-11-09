@@ -3,16 +3,16 @@
 	
 	<link href="//gmpg.org/xfn/11" rel="profile">
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
-	<link rel="canonical" href="http://maiyaporn.github.io/scrapcode/blog/angularjs-unit-testing-part2" />
+	<link rel="canonical" href="http://maiyaporn.github.io/scrapcode/blog/angularjs-unit-testing-controllers" />
 	<meta name="description" content="Testing controllers and handling promises" />
 	<meta property="og:description" content="Testing controllers and handling promises" />
 	<meta itemprop="image" content="http://maiyaporn.github.io/scrapcode/assets/images/icon.png" />
 	<meta property="og:image" content="http://maiyaporn.github.io/scrapcode/assets/images/icon.png" />
-	<meta property="og:title" content="AngularJs Unit Testing with Jasmine Part II" />
+	<meta property="og:title" content="AngularJs Unit Testing: Controllers" />
 	<meta property="og:type" content="article" />
-	<meta property="og:url" content="http://maiyaporn.github.io/scrapcode/blog/angularjs-unit-testing-part2" />
+	<meta property="og:url" content="http://maiyaporn.github.io/scrapcode/blog/angularjs-unit-testing-controllers" />
 	<meta property="og:site_name" content="Scrapcode" />
-	<title>AngularJs Unit Testing with Jasmine Part II &middot; Scrapcode</title>
+	<title>AngularJs Unit Testing: Controllers &middot; Scrapcode</title>
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="HandheldFriendly" content="True" />
 	<meta name="MobileOptimized" content="320" />
@@ -61,7 +61,7 @@
 </div> -->
 
 	<div id="post-info" data-stellar-ratio="0.7">
-		<h1>AngularJs Unit Testing with Jasmine Part II</h1>
+		<h1>AngularJs Unit Testing: Controllers</h1>
 		
 			<h2>Testing controllers and handling promises</h2>
 		
@@ -74,7 +74,7 @@
 </header>
 <div id="middle">
 	<div id="article">
-		<h1 id="angularjs-unit-testing-with-jasmine-part-ii-controller">AngularJS Unit Testing with Jasmine Part II: Controller</h1>
+		<h1 id="unit-testing-controllers-with-jasmine">Unit Testing Controllers with Jasmine</h1>
 
 <p>Angular has a pretty good document about <a href="https://docs.angularjs.org/guide/unit-testing">unit testing</a>. If you haven’t read it, give it a try. It covers the basic of unit testing in general and in AngularJS application. It is a very good guideline for understanding what we will need to get started and what features angular provide us to help testing easier. However, the application we want to test is always a lot more complicated than these examples.</p>
 
@@ -102,7 +102,7 @@
 
 <p>What I would like to explain in this post is how to test a controller which has dependencies to service that return promise (e.g. $http).</p>
 
-<p>How can we mock a promise?</p>
+<h3 id="how-to-mock-a-promise">How to mock a promise?</h3>
 
 <p>First, we create an object for productService with two methods: getAll and getDetail by using jasmine.createSpy.</p>
 
@@ -235,7 +235,7 @@
 		
 	
 	<script src="https://apis.google.com/js/plusone.js"></script>
-	<div id="g-comments" class="g-comments" data-href="http://maiyaporn.github.io/blog/angularjs-unit-testing-part2" data-width="700" data-first_party_property="BLOGGER" data-view_type="FILTERED_POSTMOD"></div>
+	<div id="g-comments" class="g-comments" data-href="http://maiyaporn.github.io/blog/angularjs-unit-testing-controllers" data-width="700" data-first_party_property="BLOGGER" data-view_type="FILTERED_POSTMOD"></div>
 	<script>
 		var width = $('#comments').width() * 0.9;
 		width = Math.round(width);
@@ -248,12 +248,10 @@
 </div>
 
 	
-		
-		
-		
-		
-		
-		
+	
+	
+	
+	
 	
 
 
